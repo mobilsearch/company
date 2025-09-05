@@ -689,7 +689,7 @@
                 resultSection.classList.add('hidden');
 
                 if (name === '') {
-                    message.textContent = '성함을 입력하세요.';
+                    message.textContent = '성명을 입력하세요.';
                     return;
                 }
 
@@ -751,7 +751,7 @@
             // **여기서부터 로그를 Google Sheets에 전송하는 로직이 추가됩니다.**
             const logData = {
                 성명: reservist.name,
-                생년월일: reservist.dob,
+                생년월일: String(reservist.dob),
                 중대: reservist.company,
                 조회시간: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
             };
@@ -798,3 +798,4 @@
 </body>
 
 </html>
+
