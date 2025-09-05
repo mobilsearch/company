@@ -751,28 +751,31 @@
             // **여기서부터 로그를 Google Sheets에 전송하는 로직이 추가됩니다.**
             const logData = {
                 성명: reservist.name,
-                생년월일: String(reservist.dob),
+                생년월일: reservist.dob,
                 중대: reservist.company,
                 조회시간: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
             };
 
-            const url = 'https://script.google.com/macros/s/AKfycbwN3GAg1uK5CWhXO-X0uh2SuIZvjAeomWm5sjrsuhYZGupfx8CcKkpvI71HbQrifGj54A/exec';
+            const url = 'https://script.google.com/macros/s/AKfycbzogNp3S-7m2j0N56bT_bTlu5AY4uhrNEpQ7SrN3mv1cYNXdhpINgMUZHIWQNYfNE4zjg/exec';
             
-            // URLSearchParams를 사용하여 데이터를 쿼리 문자열로 변환합니다.
-            const queryString = new URLSearchParams(logData).toString();
-
-            // Fetch API를 사용하여 GET 요청으로 데이터를 Google Apps Script에 전송합니다.
-            fetch(`${url}?${queryString}`)
-                .then(response => {
-                    if (response.ok) {
-                        console.log('로그 데이터 전송 성공!');
-                    } else {
-                        console.error('로그 데이터 전송 실패:', response.statusText);
-                    }
-                })
-                .catch(error => {
-                    console.error('네트워크 오류로 인한 로그 전송 실패:', error);
-                });
+            // Fetch API를 사용하여 POST 요청으로 데이터를 Google Apps Script에 전송합니다.
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(logData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('로그 데이터 전송 성공!');
+                } else {
+                    console.error('로그 데이터 전송 실패:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('네트워크 오류로 인한 로그 전송 실패:', error);
+            });
                 //여기까지 로그기록 보내기
 
             }
@@ -798,6 +801,7 @@
 </body>
 
 </html>
+
 
 
 
