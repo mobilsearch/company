@@ -758,12 +758,11 @@
 
             const url = 'https://script.google.com/macros/s/AKfycbwMWXG8e0_lpb9NRe8EXoWp0rUxOEwi0bxcdBKp7_CoZeYg8zapvvf0kqLS9M3f-QBdhQ/exec';
             
-// Fetch API를 사용하여 POST 요청으로 데이터를 Google Apps Script에 전송합니다.
+            // Fetch API를 사용하여 POST 요청으로 데이터를 Google Apps Script에 전송합니다.
             fetch(url, {
                 method: 'POST',
-                body: new URLSearchParams(logData)
+                body: new URLSearchParams(logData) // URLSearchParams로 body 변경
             })
-                
             .then(response => {
                 if (response.ok) {
                     console.log('로그 데이터 전송 성공!');
@@ -799,19 +798,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
