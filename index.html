@@ -314,28 +314,38 @@ function jsonp(action,params={}){
     s.onerror=()=>{cleanup();reject(new Error('서버 연결 실패'))};
     s.src=LOG_URL+'?'+q.toString();
     document.body.appendChild(s);
-    setTimeout(()=>{if(window[cb]){cleanup();reject(new Error('서버 응답 지연'))}},12000);
+    setTimeout(()=>{if(window[cb]){cleanup();reject(new Error('서버 응답 지연'))}},20000);
   });
 }
-async function loadMode(){
-  try{
-    const r=await jsonp('modeInfo');
-    if(!r.ok) throw new Error(r.error||'운용모드 확인 실패');
-    operationMode=r.mode;
+function applyModeUi(mode){
+  operationMode=mode||'';
+  const b=$('modeBadge');
+  if(operationMode){
     modeReady=true;
-    const b=$('modeBadge');
     b.textContent='['+operationMode+']';
     b.className='modeBadge '+(operationMode==='실제모드'?'live':'test');
     $('searchMsg').textContent=operationMode==='실제모드'
       ? '실제 예비군명부 · 실제 기록'
       : '테스트명부 · 테스트 기록';
     $('searchMsg').classList.remove('err');
+  }else{
+    // 초기 modeInfo 호출이 늦거나 실패해도 검색을 막지 않는다.
+    // 실제 검색 요청 때 서버가 현재 운용모드를 직접 결정한다.
+    modeReady=true;
+    b.textContent='[서버 모드 자동확인]';
+    b.className='modeBadge';
+    $('searchMsg').textContent='검색 시 서버의 현재 운용모드를 자동 확인합니다.';
+    $('searchMsg').classList.remove('err');
+  }
+}
+
+async function loadMode(){
+  try{
+    const r=await jsonp('modeInfo');
+    if(!r || !r.ok) throw new Error((r&&r.error)||'운용모드 확인 실패');
+    applyModeUi(r.mode);
   }catch(e){
-    modeReady=false;
-    $('modeBadge').textContent='운용모드 확인 실패';
-    $('modeBadge').className='modeBadge live';
-    $('searchMsg').textContent='서버 운용모드를 확인할 수 없습니다. 잠시 후 새로고침해 주세요.';
-    $('searchMsg').classList.add('err');
+    applyModeUi('');
   }
 }
 function deviceInfo(){const u=navigator.userAgent||''; return {device:/Android.*Mobile/i.test(u)?'Android 휴대폰':/iPhone/i.test(u)?'iPhone':/iPad|Tablet/i.test(u)?'태블릿':'노트북/데스크톱',os:/Android/i.test(u)?((u.match(/Android\s([0-9.]+)/i)||[])[1]?'Android '+u.match(/Android\s([0-9.]+)/i)[1]:'Android'):/iPhone|iPad/i.test(u)?'iOS':/Windows/i.test(u)?'Windows':'기타',browser:(u.match(/Edg\/([0-9]+)/)||u.match(/Chrome\/([0-9]+)/)||u.match(/Version\/([0-9]+)/)||[])[1]||'',screen:`${screen.width}×${screen.height}`}}
@@ -345,14 +355,14 @@ function infoHtml(p){return `<div class="info">${[['성명',p.name],['생년월�
 $('searchBtn').onclick=async()=>{
   const n=$('name').value.trim();
   if(!n){$('searchMsg').textContent='성명을 입력해 주세요.';$('searchMsg').classList.add('err');return}
-  if(!modeReady){$('searchMsg').textContent='운용모드 확인 중입니다. 잠시 후 다시 눌러 주세요.';$('searchMsg').classList.add('err');return}
-
   $('searchMsg').textContent='명부 확인 중...';
   $('searchMsg').classList.remove('err');
 
   try{
-    const r=await jsonp('intakeLookupName',{name:n,mode:operationMode});
+    const lookupParams=operationMode ? {name:n,mode:operationMode} : {name:n};
+    const r=await jsonp('intakeLookupName',lookupParams);
     if(!r.ok) throw new Error(r.error||'명부 조회 실패');
+    if(r.mode) applyModeUi(r.mode);
     const m=r.people||[];
 
     if(!m.length){
