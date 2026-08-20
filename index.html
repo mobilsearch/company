@@ -404,6 +404,50 @@ body.final-view #sFinal>.rowBtns button{
   .resultFooter{margin-left:-17px;margin-right:-17px;margin-bottom:-14px}
 }
 
+
+/* ===== v31.5 한 화면 압축 ===== */
+.finalTop{min-height:150px;padding:16px 20px 43px;border-radius:0 0 46% 46% / 0 0 11% 11%}
+.finalTop .topWatermark{width:100px;height:100px;left:8px;top:10px}
+.finalTop .topUnit{font-size:12px}
+.finalTop .topCompany{font-size:54px;letter-spacing:-3px;margin-top:1px}
+.resultFloatCard{margin:-39px 10px 0;padding:13px 15px 10px;border-radius:18px}
+.resultCheck{width:34px;height:34px;margin-bottom:5px}
+.resultCheck svg{width:19px;height:19px}
+.resultTitle{font-size:20px;line-height:1.12}
+.resultSub{font-size:11.5px;margin-top:3px}
+.resultDivider{margin:10px 0 2px}
+.resultRow{min-height:39px;grid-template-columns:34px 66px 1fr}
+.resultIcon{width:26px;height:26px}
+.resultIcon svg{width:19px;height:19px}
+.resultIcon.hash{font-size:21px}
+.resultLabel{font-size:12px}
+.resultValue{font-size:15px}
+.resultStatusList{gap:5px;margin-top:7px}
+.resultStatus{grid-template-columns:35px 1fr auto;gap:7px;padding:6px 8px;border-radius:10px}
+.statusIcon{width:31px;height:31px}
+.statusIcon svg{width:17px;height:17px}
+.statusTitle{font-size:12.5px}
+.statusSub{font-size:9.5px;margin-top:0}
+.statusDone{font-size:11.5px;gap:4px}
+.statusDone .miniCheck{width:17px;height:17px}
+.statusDone.need{color:#d92d20}
+.statusDone.need .miniCheck{background:#d92d20;font-size:12px;font-weight:1000}
+.resultBarcode{margin-top:7px;padding-top:7px}
+.resultBarcode svg{height:35px}
+.resultBarcodeCode{font-size:9.5px;margin-top:1px}
+.resultFooter{margin:6px -15px -10px;padding:7px 11px 8px;gap:7px;border-radius:0 0 18px 18px}
+.footerShield{width:22px;height:25px}
+.footerText{font-size:9.5px;line-height:1.28}
+body.final-view #sFinal>.rowBtns{margin:7px 10px 0;padding-bottom:8px;gap:6px}
+body.final-view #sFinal>.rowBtns button{min-height:36px;font-size:12px;padding:5px 7px}
+@media(max-width:430px){
+  .finalTop{min-height:145px;padding-top:14px}
+  .finalTop .topCompany{font-size:52px}
+  .resultFloatCard{margin-left:8px;margin-right:8px;padding:12px 13px 9px}
+  .resultRow{grid-template-columns:32px 62px 1fr;min-height:38px}
+  .resultFooter{margin-left:-13px;margin-right:-13px;margin-bottom:-9px}
+}
+
 </style>
 </head>
 <body>
@@ -672,7 +716,7 @@ function finish(){
     ? `이상 항목 ${abnormal.join(', ')}번 확인`
     : '예비군훈련 건강관리 문진표';
   const surveyRight=ab
-    ? `<div class="statusDone red"><span class="miniCheck">${checkSvg()}</span>확인완료</div>`
+    ? `<div class="statusDone need"><span class="miniCheck">!</span>확인필요</div>`
     : `<div class="statusDone green"><span class="miniCheck">${checkSvg()}</span>확인완료</div>`;
 
   $('finalCard').innerHTML=`
@@ -696,13 +740,8 @@ function finish(){
         </div>
         <div class="resultRow">
           <div class="resultIcon">${rowIcon('shield')}</div>
-          <div class="resultLabel">중대</div>
-          <div class="resultValue companyValue">${person.company}</div>
-        </div>
-        <div class="resultRow">
-          <div class="resultIcon">${rowIcon('group')}</div>
-          <div class="resultLabel">소대</div>
-          <div class="resultValue">${person.platoon}</div>
+          <div class="resultLabel">소속</div>
+          <div class="resultValue companyValue">${person.company} ${person.platoon}</div>
         </div>
         <div class="resultRow">
           <div class="resultIcon">${rowIcon('id')}</div>
@@ -729,7 +768,7 @@ function finish(){
         </div>
         <div class="resultStatus">
           <div class="statusIcon blue">${rowIcon('lock')}</div>
-          <div><div class="statusTitle">보안어플설치</div><div class="statusSub">보안어플 설치 및 담당자 확인</div></div>
+          <div><div class="statusTitle">보안어플설치</div><div class="statusSub">담당자 확인</div></div>
           <div class="statusDone blue"><span class="miniCheck">${checkSvg()}</span>확인완료</div>
         </div>
       </div>
