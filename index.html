@@ -7,64 +7,211 @@
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
-*{box-sizing:border-box} body{margin:0;background:#eef2f6;color:#17202a;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Segoe UI",sans-serif}
-.wrap{max-width:620px;margin:0 auto;padding:16px} .card{background:#fff;border:1px solid #dce4ec;border-radius:18px;box-shadow:0 8px 28px rgba(20,40,60,.1);overflow:hidden}
-.hd{background:#17324d;color:white;padding:14px 16px;text-align:center} .hd h1{margin:0;font-size:21px;line-height:1.2} .hd p{margin:5px 0 0;font-weight:700;font-size:13px}
-.body{padding:15px 17px} .hidden{display:none!important} h2{font-size:19px;margin:0 0 10px} h3{margin:20px 0 10px}
-label.title{display:block;font-weight:800;margin:7px 0 5px} input[type=text]{width:100%;height:44px;border:1.5px solid #ccd7e2;border-radius:10px;padding:0 12px;font-size:16px}
-button,.btn{width:100%;min-height:44px;border:0;border-radius:10px;padding:9px 12px;font-size:15px;font-weight:800;cursor:pointer;text-align:center;text-decoration:none;display:block}
-.primary{background:#1769aa;color:white} .green{background:#238a57;color:white} .gray{background:#e9eef3;color:#263b4d} .red{background:#b42318;color:#fff}
-.rowBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px} .msg{white-space:pre-line;text-align:center;margin-top:8px;font-weight:800;font-size:14px;line-height:1.45} .err{color:#b42318}
-.info{display:grid;grid-template-columns:110px 1fr;border:1px solid #d7e0e8;border-radius:12px;overflow:hidden;margin:12px 0} .info div{padding:10px;border-bottom:1px solid #e2e8ef} .info div:nth-last-child(-n+2){border-bottom:0} .key{background:#f2f5f8;font-weight:800;text-align:center}
-.q{padding:14px;border:1px solid #d9e2ea;border-radius:12px;margin:10px 0} .q p{margin:0 0 10px;line-height:1.45;font-weight:700} .opts{display:flex;gap:18px;flex-wrap:wrap} .opts label{font-weight:700}
-textarea{width:100%;min-height:80px;border:1.5px solid #ccd7e2;border-radius:10px;padding:10px;font-size:15px}
-.summary{padding:6px 8px;border-radius:8px;background:#eef7f0;border:1px solid #b9dec3;font-weight:800;font-size:12px;line-height:1.25} .summary.abnormal{background:#fff0f0;border-color:#e3a1a1;color:#b42318}
-.accountBox{padding:16px;border:1px solid #d9e2ea;border-radius:12px;background:#f9fbfc} .accountMain{font-size:19px;font-weight:900;line-height:1.5;text-align:center;margin:8px 0 14px}
+*{box-sizing:border-box}
+:root{
+  --navy:#17324d;
+  --navy-2:#1e4466;
+  --bg:#eff3f8;
+  --card:#ffffff;
+  --line:#d8e2ec;
+  --text:#17202a;
+  --muted:#657585;
+  --blue:#1769aa;
+  --green:#238a57;
+  --red:#b42318;
+  --soft-blue:#eef6ff;
+  --soft-green:#eef8f2;
+  --soft-red:#fff2f2;
+}
+html,body{height:100%}
+body{margin:0;background:linear-gradient(180deg,#eef3f8 0%,#f7f9fc 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Segoe UI",sans-serif}
+.wrap{max-width:620px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 40px rgba(20,40,60,.10);overflow:hidden}
+.hd{background:linear-gradient(145deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;padding:18px 18px 16px;text-align:center;position:relative}
+.hd::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(255,255,255,.12)}
+.hdTop{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+.hdMark{width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-weight:950;font-size:16px;background:rgba(255,255,255,.08);backdrop-filter:blur(2px)}
+.hdTitleWrap{display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.hdLabel{font-size:11px;font-weight:800;opacity:.85;letter-spacing:.4px}
+.hd h1{margin:0;font-size:24px;line-height:1.15;letter-spacing:-.4px}
+.hd p{margin:6px 0 0;font-weight:800;font-size:13px;opacity:.95}
+.modeBadge{display:inline-block;margin-top:10px;padding:6px 13px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.92);color:#17324d;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.modeBadge.test{background:#fff3cd;color:#7a5200}
+.modeBadge.live{background:#ffe3e3;color:#a61b1b;border:1px solid #e69a9a}
+.body{padding:18px}
+.hidden{display:none!important}
+h2{font-size:18px;margin:0 0 10px;letter-spacing:-.2px}
+h3{margin:18px 0 10px}
+label.title{display:block;font-weight:800;margin:8px 0 6px;color:#314254}
+input[type=text],input[type=password],textarea{width:100%;border:1.5px solid #ccd7e2;border-radius:14px;padding:0 14px;font-size:16px;background:#fff;transition:.15s;border-color .15s, box-shadow .15s}
+input[type=text],input[type=password]{height:46px}
+textarea{min-height:86px;padding:12px 14px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:#4d8ac3;box-shadow:0 0 0 4px rgba(23,105,170,.12)}
+button,.btn{width:100%;min-height:46px;border:0;border-radius:14px;padding:10px 14px;font-size:15px;font-weight:900;cursor:pointer;text-align:center;text-decoration:none;display:block;transition:transform .05s ease, opacity .15s ease, box-shadow .15s ease}
+button:active,.btn:active{transform:translateY(1px)}
+.primary{background:linear-gradient(180deg,#1e76bb 0%,#1769aa 100%);color:#fff;box-shadow:0 8px 18px rgba(23,105,170,.22)}
+.green{background:linear-gradient(180deg,#2b9c64 0%,#238a57 100%);color:#fff;box-shadow:0 8px 18px rgba(35,138,87,.18)}
+.gray{background:#eef2f6;color:#263b4d}
+.red{background:var(--red);color:#fff}
+.rowBtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.msg{white-space:pre-line;text-align:center;margin-top:8px;font-weight:800;font-size:14px;line-height:1.5}
+.err{color:var(--red)}
+.mutedCenter{text-align:center;color:var(--muted);font-size:13px;line-height:1.45}
+.info{display:grid;grid-template-columns:104px 1fr;border:1px solid #dbe4ec;border-radius:16px;overflow:hidden;margin:12px 0;background:#fff}
+.info div{padding:11px 12px;border-bottom:1px solid #e6edf3}
+.info div:nth-last-child(-n+2){border-bottom:0}
+.key{background:#f4f7fa;font-weight:900;text-align:center;color:#334658}
+.q{padding:14px;border:1px solid #dbe4ec;border-radius:16px;margin:10px 0;background:#fff}
+.q p{margin:0 0 10px;line-height:1.48;font-weight:800}
+.opts{display:flex;gap:18px;flex-wrap:wrap}
+.opts label{font-weight:700}
+.summary{padding:12px 14px;border-radius:14px;background:var(--soft-green);border:1px solid #bddfca;font-weight:900;font-size:13px;line-height:1.4}
+.summary.abnormal{background:var(--soft-red);border-color:#e7b0b0;color:var(--red)}
+.accountBox,.surveyReviewBox,.securityConfirmBox{padding:15px;border:1px solid #dbe4ec;border-radius:16px;background:#fbfcfd}
+.accountMain{font-size:19px;font-weight:950;line-height:1.5;text-align:center;margin:8px 0 14px}
 .security a{margin:8px 0;background:#eef7ff;color:#0d5c9d;border:1px solid #c7def2}
-.finalCard{border:2px solid #111;background:white;padding:8px;margin-top:4px} .welcome{font-size:19px;text-align:center;font-weight:900;border-bottom:2px solid #111;padding-bottom:4px;line-height:1.15}
-.finalTable{margin-top:8px;border:2px solid #111}
-.frow{display:grid;border-bottom:1px solid #999}
-.frow:last-child{border-bottom:0}
-.frow.two{grid-template-columns:54px minmax(0,1fr) 54px minmax(0,1fr)}
-.frow.three{grid-template-columns:42px minmax(0,1.15fr) 42px minmax(0,.9fr) 42px minmax(0,.95fr)}
-.frow.account{grid-template-columns:48px 58px 48px minmax(0,1fr)}
-.fkey,.fval{padding:4px 4px;display:flex;align-items:center;min-width:0}
-.fkey{justify-content:center;background:#f4f4f4;font-weight:800;border-right:1px solid #999;font-size:11.5px}
-.fval{font-weight:900;font-size:13px;border-right:1px solid #999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.frow .fval:last-child{border-right:0}
-.fval.emph{font-size:16px;font-weight:950;letter-spacing:.1px}
-.fval.accountNo{font-size:12px;letter-spacing:-.25px}
-.rules{margin:5px 0;border:1.5px solid #111;padding:5px 7px} .rules h3{text-align:center;margin:0 0 3px;font-size:13px} .rules ol{margin:0;padding-left:18px;line-height:1.25;font-size:11px}
-.barcodeWrap{text-align:center;border-top:1.5px solid #111;padding-top:4px;margin-top:5px} #barcode{max-width:100%;height:42px} .small{font-size:10px;color:#657585;text-align:center;margin-top:4px}
-@media(max-width:430px){.wrap{padding:0} .card{border-radius:0;box-shadow:none;min-height:100vh} .body{padding:17px}}
-
+.securityConfirmGuide{font-weight:900;line-height:1.55;text-align:center;margin:0 0 12px}
+.securityConfirmBox .status{margin-top:8px}
 .searchCompact{padding-top:0}
-.searchCompact h2{margin-bottom:6px}
-.searchCompact .title{margin-top:4px}
-.searchCompact #searchBtn{margin-top:8px!important}
-.searchCompact #searchMsg{margin-top:6px}
+.searchCard{padding:16px;border:1px solid #dbe4ec;border-radius:18px;background:linear-gradient(180deg,#ffffff 0%,#fbfcfe 100%)}
+.searchCompact #searchBtn{margin-top:10px!important}
+.searchCompact #searchMsg{margin-top:8px}
+.surveyCounts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.surveyCount{border-radius:14px;padding:15px 8px;text-align:center;font-weight:950}
+.surveyCount.ok{background:var(--soft-green);border:1px solid #b9dec3;color:#17623a}
+.surveyCount.bad{background:var(--soft-red);border:1px solid #e3a1a1;color:var(--red)}
+.surveyCount .num{display:block;font-size:26px;line-height:1.1;margin-top:4px}
+.surveyConfirmText{text-align:center;font-weight:900;line-height:1.5;margin:12px 0 4px}
 
+.finalCompact h2{font-size:17px;margin-bottom:8px}
+.finalCard{background:#fff;border:1px solid #cfdbe6;border-radius:22px;overflow:hidden;box-shadow:0 10px 30px rgba(20,40,60,.06);padding:0;margin-top:4px}
+.companyHero{padding:14px 16px;color:#081117}
+.companyHero .heroTop{display:flex;align-items:center;gap:12px}
+.companyHero .heroMark{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:17px;border:2px solid rgba(0,0,0,.18);background:rgba(255,255,255,.35)}
+.companyHero .heroSub{font-size:12px;font-weight:900;opacity:.9;line-height:1.2}
+.companyHero .heroTitle{font-size:30px;font-weight:1000;line-height:1.02;letter-spacing:-1px;margin-top:2px}
+.companyHero .heroNote{font-size:11px;font-weight:900;margin-top:4px;opacity:.9}
+.company5{background:#48be46}
+.company6{background:#f08a3d}
+.company7{background:#dcc7a8}
+.company8{background:#db57db}
+.companyHQ{background:#77caea}
+.companyMED{background:#eef2f4}
+.finalInner{padding:14px}
+.welcomeBlock{padding:14px 16px;border-radius:18px;background:linear-gradient(180deg,#f8fbff 0%,#f1f6fb 100%);border:1px solid #d8e6f2;text-align:center;margin-bottom:12px}
+.welcomeBlock .welcomeTitle{font-size:28px;font-weight:1000;line-height:1.1;letter-spacing:-.8px;margin:0}
+.welcomeBlock .welcomeSub{margin-top:5px;font-size:13px;color:#4d6073;font-weight:800}
+.finalInfoGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.infoCard{border:1px solid #dde7ef;border-radius:16px;padding:12px;background:#fff}
+.infoCard.full{grid-column:1 / -1}
+.infoCard .iLabel{font-size:12px;font-weight:900;color:#688; margin-bottom:4px}
+.infoCard .iValue{font-size:18px;font-weight:950;line-height:1.2;color:#16212b}
+.infoCard .iValue.sm{font-size:16px}
+.infoCard .iValue.xs{font-size:14px;letter-spacing:-.2px}
+.infoCard.emph{background:#f7fbff;border-color:#cfe1f0}
+.statusStack{display:grid;gap:8px;margin-bottom:10px}
+.rules{margin:10px 0 0;border:1px solid #d9e3ec;border-radius:16px;padding:12px 14px;background:#fff}
+.rules h3{text-align:center;margin:0 0 6px;font-size:15px}
+.rules ol{margin:0;padding-left:19px;line-height:1.5;font-size:12.5px}
+.barcodeCard{margin-top:10px;padding:14px;border:1px solid #d9e3ec;border-radius:16px;background:#fff;text-align:center}
+#barcode{max-width:100%;height:48px}
+#barcodeText{font-size:11px;line-height:1.15;color:#3b4d61;margin-top:4px}
+.unitText{margin-top:8px;text-align:center;font-size:22px;font-weight:1000;letter-spacing:-.4px}
+.finalCompact .rowBtns{margin-top:10px;gap:8px}
+.finalCompact .rowBtns button{min-height:42px;padding:8px 8px;font-size:14px}
+.small{font-size:10.5px;color:var(--muted);text-align:center;margin-top:5px;line-height:1.35}
+@media(max-width:430px){
+  .wrap{padding:0}
+  .card{border-radius:0;box-shadow:none;min-height:100vh;border:0}
+  .body{padding:16px}
+  .welcomeBlock .welcomeTitle{font-size:24px}
+  .companyHero .heroTitle{font-size:28px}
+  .finalInfoGrid{gap:8px}
+  .infoCard{padding:10px}
+}
 
-.finalCompact h2{font-size:16px;margin-bottom:4px}
-.finalCompact .rowBtns{margin-top:5px;gap:6px}
-.finalCompact .rowBtns button{min-height:38px;padding:6px 8px;font-size:13px}
-.finalCompact #surveySummary{margin-top:5px!important}
-.finalCompact #securitySummary{margin-top:4px!important}
-.finalCompact #barcodeText{font-size:10px;line-height:1.1}
-.finalCompact .finalTable{margin-top:4px}
+.hdMarkImg{
+  width:44px;height:44px;border-radius:50%;object-fit:cover;
+  background:#fff;border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 4px 12px rgba(0,0,0,.16)
+}
+.heroMarkImg{
+  width:52px;height:52px;border-radius:50%;object-fit:cover;flex:0 0 auto;
+  background:#fff;border:2px solid rgba(0,0,0,.16);
+  box-shadow:0 4px 12px rgba(0,0,0,.14)
+}
+
+/* 모든 단계 공통 카드 느낌 */
+section:not(#sFinal){
+  animation:fadeIn .14s ease-out
+}
+@keyframes fadeIn{
+  from{opacity:.55;transform:translateY(2px)}
+  to{opacity:1;transform:none}
+}
+section:not(#sFinal)>h2{
+  display:flex;align-items:center;gap:8px;
+  color:#1c3146;font-size:18px;font-weight:950
+}
+section:not(#sFinal)>h2::before{
+  content:"";width:5px;height:20px;border-radius:4px;
+  background:linear-gradient(180deg,#287bb9,#17324d);flex:0 0 auto
+}
+
+/* 문진 */
+.q{
+  box-shadow:0 3px 10px rgba(31,55,77,.035)
+}
+.opts input{transform:scale(1.08);margin-right:3px}
+
+/* 계좌/보안 카드 */
+.accountBox,.securityConfirmBox,.surveyReviewBox{
+  box-shadow:0 5px 16px rgba(31,55,77,.045)
+}
+
+/* 최종 화면은 이미지 저장 시 한눈에 들어오도록 더 압축 */
+#sFinal>.finalCard{margin-top:0}
+.companyHero{padding:12px 14px}
+.companyHero .heroTop{gap:10px}
+.companyHero .heroSub{font-size:11.5px}
+.companyHero .heroTitle{font-size:31px}
+.companyHero .heroNote{font-size:10.5px;margin-top:3px}
+.finalInner{padding:11px}
+.welcomeBlock{padding:11px 12px;margin-bottom:9px;border-radius:15px}
+.welcomeBlock .welcomeTitle{font-size:23px}
+.welcomeBlock .welcomeSub{font-size:11.5px}
+.finalInfoGrid{gap:7px;margin-bottom:8px}
+.infoCard{padding:9px 10px;border-radius:13px}
+.infoCard .iLabel{font-size:10.5px;margin-bottom:2px}
+.infoCard .iValue{font-size:16px}
+.infoCard .iValue.sm{font-size:14px}
+.infoCard .iValue.xs{font-size:13px}
+.statusStack{gap:6px;margin-bottom:8px}
+.statusStack .summary{padding:9px 11px;font-size:12px;border-radius:12px}
+.rules{margin-top:8px;padding:9px 12px;border-radius:13px}
+.rules h3{font-size:13px;margin-bottom:4px}
+.rules ol{font-size:10.8px;line-height:1.42}
+.barcodeCard{margin-top:8px;padding:10px;border-radius:13px}
+#barcode{height:42px}
+.unitText{font-size:18px;margin-top:5px}
+.finalCompact .rowBtns{margin-top:8px}
+.finalCompact .rowBtns button{min-height:40px}
 
 </style>
 </head>
 <body>
 <div class="wrap"><main class="card">
-<div class="hd"><h1>동원훈련 입소 확인</h1><p>훈련일자 2026년 9월 9일</p></div>
+<div class="hd"><div class="hdTop"><img class="hdMarkImg" src="unit_mark_39.png" alt="제39보병사단 부대마크"><div class="hdTitleWrap"><div class="hdLabel">제39보병사단 · 119여단 2대대</div><h1>동원훈련 입소 확인</h1></div></div><p>훈련일자 2026년 9월 9일</p><div id="modeBadge" class="modeBadge">운용모드 확인 중...</div></div>
 <div class="body">
 
 <section id="sSearch" class="searchCompact">
 <h2>1. 소속 중대 확인</h2>
-<label class="title">성명</label><input id="name" type="text" placeholder="예: 일두산" autocomplete="off">
-<button class="primary" id="searchBtn" style="margin-top:12px">중대 검색</button>
-<div id="searchMsg" class="msg">119여단 2대대</div>
+<div class="searchCard">
+  <div class="mutedCenter" style="margin-bottom:10px;font-weight:800">성명을 입력하고 본인의 소속 중대를 확인하세요.</div>
+  <label class="title">성명</label><input id="name" type="text" placeholder="예: 일두산" autocomplete="off">
+  <button class="primary" id="searchBtn" style="margin-top:12px">중대 검색</button>
+  <div id="searchMsg" class="msg">119여단 2대대</div>
+</div>
 </section>
 
 <section id="sDup" class="hidden">
@@ -94,6 +241,22 @@ textarea{width:100%;min-height:80px;border:1.5px solid #ccd7e2;border-radius:10p
 <button class="primary" id="surveyDone">문진 완료</button>
 </section>
 
+
+<section id="sSurveyReview" class="hidden">
+<h2>문진 결과 확인</h2>
+<div class="surveyReviewBox">
+  <div class="surveyCounts">
+    <div class="surveyCount ok">이상없음<span id="normalCount" class="num">0건</span></div>
+    <div class="surveyCount bad">이상있음<span id="abnormalCount" class="num">0건</span></div>
+  </div>
+  <div id="surveyConfirmText" class="surveyConfirmText">문진결과가 맞는지 확인바랍니다.<br>이상없으면 제출바랍니다.</div>
+</div>
+<div class="rowBtns">
+  <button class="primary" id="surveySubmit">제출</button>
+  <button class="gray" id="surveyEdit">수정</button>
+</div>
+</section>
+
 <section id="sAccount" class="hidden">
 <h2>3. 본인 계좌 확인</h2>
 <div class="accountBox"><div>등록된 계좌</div><div id="accountText" class="accountMain"></div><div style="font-weight:800;text-align:center">본인 계좌가 맞습니까?</div>
@@ -105,10 +268,15 @@ textarea{width:100%;min-height:80px;border:1.5px solid #ccd7e2;border-radius:10p
 <h2>4. 국방 모바일 보안앱</h2>
 <div class="security">
 <a class="btn" href="https://play.google.com/store/apps/details?id=kr.mil.mnd.mmsa.vt" target="_blank" rel="noopener">Android 보안앱 설치</a>
-<a class="btn" href="https://apps.apple.com/kr/app/%EA%B5%AD%EB%B0%A9%EB%AA%A8%EB%B0%94%EC%9D%BC%EB%B3%B4%EC%95%88-%EC%99%B8%EB%B6%80%EC%9D%B8/id1489115591" target="_blank" rel="noopener">iPhone 보안앱 설치</a>
+<a class="btn" href="https://apps.apple.com/kr/app/%EA%B5%AD%EB%B0%A9%EB%AA%A8%EB%B0%94%EC%95%88-%EC%99%B8%EB%B6%80%EC%9D%B8/id1489115591" target="_blank" rel="noopener">iPhone 보안앱 설치</a>
 </div>
-<p style="font-weight:800">설치 후 아래에서 결과를 선택하세요.</p>
-<div class="rowBtns"><button class="green" data-sec="설치완료">설치 완료</button><button class="gray" data-sec="미설치">미설치/확인필요</button></div>
+<div class="securityConfirmBox">
+  <p class="securityConfirmGuide">설치를 완료했으면 부대담당자에게 확인받으시기 바랍니다.</p>
+  <label class="title" for="securityCode">확인번호</label>
+  <input id="securityCode" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="확인번호 입력">
+  <button class="green" id="securityConfirmBtn" style="margin-top:10px">보안어플 확인완료</button>
+  <div id="securityMsg" class="status hidden"></div>
+</div>
 </section>
 
 <section id="sFinal" class="hidden finalCompact">
@@ -122,56 +290,206 @@ textarea{width:100%;min-height:80px;border:1.5px solid #ccd7e2;border-radius:10p
 <div class="barcodeWrap"><svg id="barcode"></svg><div id="barcodeText"></div></div>
 <div style="text-align:center;font-size:18px;font-weight:900;margin-top:8px">119여단 2대대</div>
 </div>
-<div class="rowBtns"><button class="primary" id="saveImage">이미지 저장</button><button class="gray" id="restart">처음부터</button></div>
+<div class="rowBtns"><button class="primary" id="saveImage">입소확인 이미지 저장</button><button class="gray" id="restart">처음부터</button></div>
 <div class="small">바코드는 관리자 신분확인 단계에서 스캐너로 조회합니다.</div>
 </section>
 
 </div></main></div>
 <script>
-const DATA = [{"name": "일두산", "dob": "20010101", "military": "26-000001", "company": "5중대", "platoon": "1소대", "role": "분대장", "gun": "123456", "room": "2층1호실", "bank": "농협", "account": "123-4567-1234-01", "barcode": "260909000001"}, {"name": "이두산", "dob": "20010102", "military": "26-000002", "company": "6중대", "platoon": "2소대", "role": "소총수", "gun": "223456", "room": "2층2호실", "bank": "농협", "account": "123-4567-2234-02", "barcode": "260909000002"}, {"name": "삼두산", "dob": "20010103", "military": "26-000003", "company": "7중대", "platoon": "3소대", "role": "부분대장", "gun": "323456", "room": "2층3호실", "bank": "농협", "account": "123-4567-3234-03", "barcode": "260909000003"}, {"name": "사두산", "dob": "20010104", "military": "26-000004", "company": "8중대", "platoon": "4소대", "role": "소총수", "gun": "423456", "room": "2층4호실", "bank": "농협", "account": "123-4567-4234-04", "barcode": "260909000004"}, {"name": "오두산", "dob": "20010105", "military": "26-000005", "company": "본부중대", "platoon": "1소대", "role": "통신병", "gun": "523456", "room": "2층5호실", "bank": "농협", "account": "123-4567-5234-05", "barcode": "260909000005"}, {"name": "육두산", "dob": "19970106", "military": "26-000006", "company": "5중대", "platoon": "2소대", "role": "소총수", "gun": "623456", "room": "2층6호실", "bank": "농협", "account": "123-4567-6234-06", "barcode": "260909000006"}, {"name": "육두산", "dob": "20010118", "military": "26-000007", "company": "6중대", "platoon": "3소대", "role": "부분대장", "gun": "723456", "room": "2층7호실", "bank": "농협", "account": "123-4567-7234-07", "barcode": "260909000007"}, {"name": "칠두산", "dob": "19980107", "military": "26-000008", "company": "7중대", "platoon": "4소대", "role": "분대장", "gun": "823456", "room": "2층8호실", "bank": "농협", "account": "123-4567-8234-08", "barcode": "260909000008"}, {"name": "칠두산", "dob": "20010119", "military": "26-000009", "company": "8중대", "platoon": "1소대", "role": "소총수", "gun": "923456", "room": "2층9호실", "bank": "농협", "account": "123-4567-9234-09", "barcode": "260909000009"}, {"name": "팔두산", "dob": "19960108", "military": "26-000010", "company": "의무중대", "platoon": "2소대", "role": "의무병", "gun": "133456", "room": "2층10호실", "bank": "농협", "account": "123-4567-1034-10", "barcode": "260909000010"}, {"name": "구두산", "dob": "19990109", "military": "26-000011", "company": "5중대", "platoon": "3소대", "role": "부분대장", "gun": "233456", "room": "2층1호실", "bank": "농협", "account": "123-4567-1134-11", "barcode": "260909000011"}, {"name": "십두산", "dob": "20000110", "military": "26-000012", "company": "6중대", "platoon": "4소대", "role": "분대장", "gun": "333456", "room": "2층2호실", "bank": "농협", "account": "123-4567-1234-12", "barcode": "260909000012"}];
+let DATA = [];
 const LOG_URL = "https://script.google.com/macros/s/AKfycbzXm3I6ZbSifB7H9U9krGplLTsChmepjgZ-wAY7L1qI02TjnwS1viMjsARtWtNamd_8TQ/exec";
-let person=null, answers={}, abnormal=[], accountConfirmed='', securityStatus='';
+let person=null, answers={}, abnormal=[], accountConfirmed='', securityStatus='', operationMode='', modeReady=false;
 
 const $=id=>document.getElementById(id);
 function show(id){ for(const s of document.querySelectorAll('section')) s.classList.add('hidden'); $(id).classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); }
 function fmtDob(v){return `${v.slice(0,4)}.${v.slice(4,6)}.${v.slice(6,8)}`;}
 function post(payload){ try{fetch(LOG_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})}catch(e){} }
+function jsonp(action,params={}){
+  return new Promise((resolve,reject)=>{
+    const cb='__in_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script');
+    const q=new URLSearchParams({action,callback:cb,...params});
+    window[cb]=r=>{cleanup();resolve(r)};
+    function cleanup(){try{delete window[cb]}catch(_ ){};s.remove()}
+    s.onerror=()=>{cleanup();reject(new Error('서버 연결 실패'))};
+    s.src=LOG_URL+'?'+q.toString();
+    document.body.appendChild(s);
+    setTimeout(()=>{if(window[cb]){cleanup();reject(new Error('서버 응답 지연'))}},12000);
+  });
+}
+async function loadMode(){
+  try{
+    const r=await jsonp('modeInfo');
+    if(!r.ok) throw new Error(r.error||'운용모드 확인 실패');
+    operationMode=r.mode;
+    modeReady=true;
+    const b=$('modeBadge');
+    b.textContent='['+operationMode+']';
+    b.className='modeBadge '+(operationMode==='실제모드'?'live':'test');
+    $('searchMsg').textContent=operationMode==='실제모드'
+      ? '실제 예비군명부 · 실제 기록'
+      : '테스트명부 · 테스트 기록';
+    $('searchMsg').classList.remove('err');
+  }catch(e){
+    modeReady=false;
+    $('modeBadge').textContent='운용모드 확인 실패';
+    $('modeBadge').className='modeBadge live';
+    $('searchMsg').textContent='서버 운용모드를 확인할 수 없습니다. 잠시 후 새로고침해 주세요.';
+    $('searchMsg').classList.add('err');
+  }
+}
 function deviceInfo(){const u=navigator.userAgent||''; return {device:/Android.*Mobile/i.test(u)?'Android 휴대폰':/iPhone/i.test(u)?'iPhone':/iPad|Tablet/i.test(u)?'태블릿':'노트북/데스크톱',os:/Android/i.test(u)?((u.match(/Android\s([0-9.]+)/i)||[])[1]?'Android '+u.match(/Android\s([0-9.]+)/i)[1]:'Android'):/iPhone|iPad/i.test(u)?'iOS':/Windows/i.test(u)?'Windows':'기타',browser:(u.match(/Edg\/([0-9]+)/)||u.match(/Chrome\/([0-9]+)/)||u.match(/Version\/([0-9]+)/)||[])[1]||'',screen:`${screen.width}×${screen.height}`}}
-function searchLog(result,p){const d=deviceInfo();post({action:'searchLog',name:$('name').value.trim(),dob:p?.dob||'',result,company:p?.company||'',duplicate:(DATA.filter(x=>x.name===$('name').value.trim()).length>1?'Y':'N'),device:d.device,model:'',os:d.os,browser:d.browser,bit:/Win64|x64|x86_64/i.test(navigator.userAgent)?'64비트':'',screenSize:d.screen,sessionId:sessionStorage.msid||(sessionStorage.msid=Math.random().toString(36).slice(2,10))})}
+function searchLog(result,p,duplicateCount=1){const d=deviceInfo();post({action:'searchLog',mode:operationMode,name:$('name').value.trim(),dob:p?.dob||'',result,company:p?.company||'',duplicate:(duplicateCount>1?'Y':'N'),device:d.device,model:'',os:d.os,browser:d.browser,bit:/Win64|x64|x86_64/i.test(navigator.userAgent)?'64비트':'',screenSize:d.screen,sessionId:sessionStorage.msid||(sessionStorage.msid=Math.random().toString(36).slice(2,10))})}
 function infoHtml(p){return `<div class="info">${[['성명',p.name],['생년월일',fmtDob(p.dob)],['군번',p.military],['중대',p.company],['소대',p.platoon],['직책',p.role],['총번',p.gun],['내무실',p.room]].map(x=>`<div class="key">${x[0]}</div><div>${x[1]}</div>`).join('')}</div>`;}
 
-$('searchBtn').onclick=()=>{const n=$('name').value.trim(); if(!n){$('searchMsg').textContent='성명을 입력해 주세요.';$('searchMsg').classList.add('err');return} const m=DATA.filter(x=>x.name===n); if(!m.length){$('searchMsg').textContent='입력하신 성명을 확인할 수 없습니다.\n성명을 정확히 입력했는지 확인한 후 다시 검색해 주세요.\n계속 확인되지 않으면 통제관에게 문의해 주세요.';$('searchMsg').classList.add('err');searchLog('명단 없음');return} if(m.length>1){$('dupList').innerHTML=m.map((x,i)=>`<label class="q" style="display:block"><input type="radio" name="dup" value="${i}"> ${fmtDob(x.dob)} · ${x.company}</label>`).join(''); window._matches=m; show('sDup'); return} person=m[0]; searchLog('중대 확인 완료',person); $('personInfo').innerHTML=infoHtml(person); show('sConfirm');};
-$('dupOk').onclick=()=>{const r=document.querySelector('input[name=dup]:checked');if(!r)return;person=window._matches[+r.value];searchLog('중대 확인 완료',person);$('personInfo').innerHTML=infoHtml(person);show('sConfirm');};
+$('searchBtn').onclick=async()=>{
+  const n=$('name').value.trim();
+  if(!n){$('searchMsg').textContent='성명을 입력해 주세요.';$('searchMsg').classList.add('err');return}
+  if(!modeReady){$('searchMsg').textContent='운용모드 확인 중입니다. 잠시 후 다시 눌러 주세요.';$('searchMsg').classList.add('err');return}
+
+  $('searchMsg').textContent='명부 확인 중...';
+  $('searchMsg').classList.remove('err');
+
+  try{
+    const r=await jsonp('intakeLookupName',{name:n,mode:operationMode});
+    if(!r.ok) throw new Error(r.error||'명부 조회 실패');
+    const m=r.people||[];
+
+    if(!m.length){
+      $('searchMsg').textContent='입력하신 성명을 확인할 수 없습니다.\n성명을 정확히 입력했는지 확인한 후 다시 검색해 주세요.\n계속 확인되지 않으면 통제관에게 문의해 주세요.';
+      $('searchMsg').classList.add('err');
+      searchLog('명단 없음',null,0);
+      return;
+    }
+
+    if(m.length>1){
+      $('dupList').innerHTML=m.map((x,i)=>`<label class="q" style="display:block"><input type="radio" name="dup" value="${i}"> ${fmtDob(x.dob)} · ${x.company}</label>`).join('');
+      window._matches=m;
+      show('sDup');
+      return;
+    }
+
+    person=m[0];
+    searchLog('중대 확인 완료',person,1);
+    $('personInfo').innerHTML=infoHtml(person);
+    show('sConfirm');
+  }catch(e){
+    $('searchMsg').textContent=e.message||'서버 연결 실패';
+    $('searchMsg').classList.add('err');
+  }
+};
+$('dupOk').onclick=()=>{const r=document.querySelector('input[name=dup]:checked');if(!r)return;person=window._matches[+r.value];searchLog('중대 확인 완료',person,window._matches.length);$('personInfo').innerHTML=infoHtml(person);show('sConfirm');};
 $('toSurvey').onclick=()=>show('sSurvey');
 
-$('surveyDone').onclick=()=>{abnormal=[];answers={};for(let i=1;i<=9;i++){const r=document.querySelector(`input[name=q${i}]:checked`);if(!r){$('surveyMsg').textContent=`${i}번 문항을 선택해 주세요.`;return}answers['q'+i]=r.value; if([1,3,4,5,6,7,8,9].includes(i)&&r.value==='예') abnormal.push(i);} answers.q1detail=$('q1detail').value.trim();answers.q10=$('q10').value.trim();if(answers.q10)abnormal.push(10);$('surveyMsg').textContent='';show('sAccount');$('accountText').textContent=`${person.bank}  ${person.account}`; $('bankEdit').value=person.bank;$('acctEdit').value=person.account;};
+$('surveyDone').onclick=()=>{
+  abnormal=[];answers={};
+  for(let i=1;i<=9;i++){
+    const r=document.querySelector(`input[name=q${i}]:checked`);
+    if(!r){$('surveyMsg').textContent=`${i}번 문항을 선택해 주세요.`;return}
+    answers['q'+i]=r.value;
+    if([1,3,4,5,6,7,8,9].includes(i)&&r.value==='예') abnormal.push(i);
+  }
+  answers.q1detail=$('q1detail').value.trim();
+  answers.q10=$('q10').value.trim();
+  if(answers.q10) abnormal.push(10);
+
+  $('surveyMsg').textContent='';
+  const abnormalN=abnormal.length;
+  const normalN=10-abnormalN;
+  $('normalCount').textContent=`${normalN}건`;
+  $('abnormalCount').textContent=`${abnormalN}건`;
+  $('surveyConfirmText').innerHTML=abnormalN===0
+    ? '문진결과가 맞는지 확인바랍니다.<br>이상없으면 제출바랍니다.'
+    : `문진결과가 맞는지 확인바랍니다.<br>이상 항목 ${abnormalN}건이 있습니다. 수정 후 제출바랍니다.`;
+  show('sSurveyReview');
+};
+
+$('surveySubmit').onclick=()=>{
+  show('sAccount');
+  $('accountText').textContent=`${person.bank}  ${person.account}`;
+  $('bankEdit').value=person.bank;
+  $('acctEdit').value=person.account;
+};
+
+$('surveyEdit').onclick=()=>show('sSurvey');
 
 $('accountYes').onclick=()=>{accountConfirmed='일치';show('sSecurity');};
 $('accountNo').onclick=()=>$('accountEdit').classList.remove('hidden');
 $('accountSave').onclick=()=>{const b=$('bankEdit').value.trim(),a=$('acctEdit').value.trim();if(!b||!a)return;person={...person,bank:b,account:a};accountConfirmed='수정';show('sSecurity');};
 
-document.querySelectorAll('[data-sec]').forEach(b=>b.onclick=()=>{securityStatus=b.dataset.sec;finish();});
-function finish(){const ab=abnormal.length>0; $('finalTable').innerHTML=`
-<div class="frow two">
-  <div class="fkey">성명</div><div class="fval">${person.name}</div>
-  <div class="fkey">군번</div><div class="fval">${person.military}</div>
-</div>
-<div class="frow three">
-  <div class="fkey">중대</div><div class="fval">${person.company}</div>
-  <div class="fkey">소대</div><div class="fval">${person.platoon}</div>
-  <div class="fkey">직책</div><div class="fval">${person.role}</div>
-</div>
-<div class="frow two">
-  <div class="fkey">총번</div><div class="fval emph">${person.gun}</div>
-  <div class="fkey">내무실</div><div class="fval emph">${person.room}</div>
-</div>
-<div class="frow account">
-  <div class="fkey">은행</div><div class="fval">${person.bank}</div>
-  <div class="fkey">계좌</div><div class="fval accountNo">${person.account}</div>
-</div>`; const sm=$('surveySummary');sm.textContent=ab?`문진결과: 이상 항목 ${abnormal.join(', ')}번`:'문진결과: 특이사항 없음';sm.classList.toggle('abnormal',ab);$('securitySummary').textContent=`보안어플 설치결과: ${securityStatus}`;JsBarcode('#barcode',person.barcode,{format:'CODE128',displayValue:false,height:36,margin:2,width:1.45});$('barcodeText').textContent=person.barcode; show('sFinal');
-post({action:'finalSubmit',barcodeId:person.barcode,name:person.name,dob:person.dob,military:person.military,company:person.company,platoon:person.platoon,q1:answers.q1+(answers.q1detail?`(${answers.q1detail})` :''),q2:answers.q2,q3:answers.q3,q4:answers.q4,q5:answers.q5,q6:answers.q6,q7:answers.q7,q8:answers.q8,q9:answers.q9,q10:answers.q10||'',surveySummary:ab?'이상 있음':'특이사항 없음',abnormalItems:ab?abnormal.join(','):'없음',accountConfirm:accountConfirmed,bank:person.bank,account:person.account,security:securityStatus,finalStatus:'완료'});}
+$('securityConfirmBtn').onclick=()=>{
+  const code=$('securityCode').value.trim();
+  if(code!=='1192'){
+    $('securityMsg').textContent='확인번호가 맞지 않습니다. 부대담당자에게 확인해 주세요.';
+    $('securityMsg').classList.remove('hidden');
+    $('securityMsg').classList.add('err');
+    return;
+  }
+  $('securityMsg').classList.add('hidden');
+  securityStatus='보안어플설치 확인완료';
+  finish();
+};
+$('securityCode').addEventListener('keydown',e=>{
+  if(e.key==='Enter') $('securityConfirmBtn').click();
+});
+function companyTheme(name){
+  const n=(name||'').replace(/\s+/g,'');
+  if(n.includes('5중대')) return {cls:'company5',label:'5중대'};
+  if(n.includes('6중대')) return {cls:'company6',label:'6중대'};
+  if(n.includes('7중대')) return {cls:'company7',label:'7중대'};
+  if(n.includes('8중대')) return {cls:'company8',label:'8중대'};
+  if(n.includes('본부')) return {cls:'companyHQ',label:'본부'};
+  if(n.includes('의무')) return {cls:'companyMED',label:'의무'};
+  return {cls:'companyHQ',label:name||'중대'};
+}
+function finish(){
+  const ab=abnormal.length>0;
+  const theme=companyTheme(person.company);
+  $('finalCard').innerHTML=`
+  <div class="companyHero ${theme.cls}">
+    <div class="heroTop">
+      <img class="heroMarkImg" src="unit_mark_39.png" alt="제39보병사단 부대마크">
+      <div>
+        <div class="heroSub">제39보병사단 · 119여단 2대대 동원훈련</div>
+        <div class="heroTitle">${theme.label}</div>
+        <div class="heroNote">경남수호 70년, 백전백승 충무예비</div>
+      </div>
+    </div>
+  </div>
+  <div class="finalInner">
+    <div class="welcomeBlock">
+      <div class="welcomeTitle">훈련 입소를 환영합니다.</div>
+      <div class="welcomeSub">훈련정보 및 입소 안내사항</div>
+    </div>
+
+    <div class="finalInfoGrid">
+      <div class="infoCard"><div class="iLabel">성명</div><div class="iValue">${person.name}</div></div>
+      <div class="infoCard"><div class="iLabel">군번</div><div class="iValue">${person.military}</div></div>
+      <div class="infoCard"><div class="iLabel">중대</div><div class="iValue">${person.company}</div></div>
+      <div class="infoCard"><div class="iLabel">소대 / 직책</div><div class="iValue sm">${person.platoon} · ${person.role}</div></div>
+      <div class="infoCard emph"><div class="iLabel">총번</div><div class="iValue">${person.gun}</div></div>
+      <div class="infoCard emph"><div class="iLabel">내무실</div><div class="iValue">${person.room}</div></div>
+      <div class="infoCard"><div class="iLabel">은행</div><div class="iValue sm">${person.bank}</div></div>
+      <div class="infoCard full"><div class="iLabel">계좌</div><div class="iValue xs">${person.account}</div></div>
+    </div>
+
+    <div class="statusStack">
+      <div id="surveySummary" class="summary ${ab?'abnormal':''}">${ab?`문진결과: 이상 항목 ${abnormal.join(', ')}번`:'문진결과: 특이사항 없음'}</div>
+      <div id="securitySummary" class="summary">${securityStatus}</div>
+    </div>
+
+    <div class="rules"><h3>준수사항</h3><ol><li>중대장 통제 준수</li><li>교육시간 준수</li><li>교육시간 휴대폰 사용 시 강제퇴소</li><li>사진촬영 금지 등 군사보안 준수</li><li>애로사항은 중대장에게 문의</li></ol></div>
+
+    <div class="barcodeCard"><svg id="barcode"></svg><div id="barcodeText"></div><div class="unitText">119여단 2대대</div></div>
+  </div>`;
+
+  JsBarcode('#barcode',person.barcode,{format:'CODE128',displayValue:false,height:38,margin:2,width:1.45});
+  $('barcodeText').textContent=person.barcode;
+  show('sFinal');
+  post({action:'finalSubmit',mode:operationMode,barcodeId:person.barcode,name:person.name,dob:person.dob,military:person.military,company:person.company,platoon:person.platoon,q1:answers.q1+(answers.q1detail?`(${answers.q1detail})` :''),q2:answers.q2,q3:answers.q3,q4:answers.q4,q5:answers.q5,q6:answers.q6,q7:answers.q7,q8:answers.q8,q9:answers.q9,q10:answers.q10||'',surveySummary:ab?'이상 있음':'특이사항 없음',abnormalItems:ab?abnormal.join(','):'없음',accountConfirm:accountConfirmed,bank:person.bank,account:person.account,security:securityStatus,finalStatus:'완료'});}
 $('saveImage').onclick=async()=>{const c=await html2canvas($('finalCard'),{scale:2,backgroundColor:'#ffffff'});const a=document.createElement('a');a.download=`입소확인_${person.name}_${person.barcode}.png`;a.href=c.toDataURL('image/png');a.click();};
 $('restart').onclick=()=>location.reload();
 $('name').addEventListener('keydown',e=>{if(e.key==='Enter')$('searchBtn').click();});
+window.addEventListener('DOMContentLoaded',loadMode);
 </script>
 </body></html>
