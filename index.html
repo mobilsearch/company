@@ -448,6 +448,15 @@ body.final-view #sFinal>.rowBtns button{min-height:36px;font-size:12px;padding:5
   .resultFooter{margin-left:-13px;margin-right:-13px;margin-bottom:-9px}
 }
 
+/* ===== v31.6 실제 모바일 한 화면 보정 ===== */
+body.final-view .finalResultShell{
+  min-height:calc(100vh - 51px);
+  min-height:calc(100dvh - 51px);
+}
+@media(max-height:700px){
+  .finalTop{min-height:136px;padding-top:10px}
+}
+
 </style>
 </head>
 <body>
